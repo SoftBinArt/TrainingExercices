@@ -1,0 +1,108 @@
+O Excel utiliza dois "formatos" para numerar colunas: o primeiro "formato", 
+que é que os utilizadores conhecem, e através do qual interagem com o Excel
+para referenciar células, utiliza as 26 letras do alfabeto ocidental; o 
+segundo "formato", utilizado internamente, utiliza uma numeração linear a 
+partir de 0.
+
+Coloquei a palavra "formato" entre aspas, porque, na verdade, o conceito 
+envolvido é o de "sistema ou base de numeração". Neste exercício, pretendemos 
+converter então números de coluna da base de numeração alfabética para a 
+base de numeração decimal.
+
+A conversão entre estes duas bases é semelhante à conversão de hexadecimal 
+para decimal. Sendo assim, vamos começar precisamente por aqui, converter hexa
+para decimal.
+
+O algoritmo de conversão de um dado número H de hexadecimal para decimal, 
+passa por multiplicar cada algarismo hexadecimal de H por uma potência 16. 
+Recuando da direita para a esquerda, o algarismo menos significativo - 
+das unidades - é multiplicado por 16^0, o algarismo anterior - das 
+"hexadezenas" - é multiplicado por 16^1, e assim sucessivamente. Se H tiver N 
+algarismos, o algarismo mais significativo é multiplicado por 16^(N-1).
+O número decimal resultante obtém-se somando estes produtos. 
+
+Vejamos alguns exemplos
+
+1. H = 1A
+
+    16^2  |  16^1 | 16^0 | D (Decimal)
+    (256) |  (16) |  (1) |
+ ----------------------------------------------------------------------------
+          |   1   |   A  |  1x16 + Ax1 = 16 + 10x1 = 26
+
+2. H = AC3
+
+ ----------------------------------------------------------------------------
+       A  |   C   |   3  |  Ax256 + Cx16 + 3x1 = 10x256 + 12x16 + 3x1 = 2755
+
+
+Converter um número da base de numeração alfabética para decimal é parecido, com duas diferenças substanciais:
+
+1. Agora utilizamos 26 símbolos em vez de 16. Isto implica que tenhamos que 
+   trabalhar com potências de 26.
+
+2. O valor 'A' tem um papel diferente. A coluna 'A' corresponde à coluna 0 em
+   numeração interna, 'B' corresponde à coluna 1, e assim sucessivamente até
+   à coluna 'Z', que é a coluna 25 em numeração interna. Por aqui somos 
+   tentados a pensar que 'A' equivale a '0'. Mas se assim, for, por 
+   analogia com o sistema hexadecimal, a coluna que deveria suceder a 'Z' 
+   deveria ser 'BA'. Mas a coluna que sucede 'Z' é 'AA', e não 'BA'. 
+   A fórmula em cima indicada para converter de hexadecimal para decimal
+   parte do presuposto de que a seguir a 'F' vem '10' e não '00'. Ou seja, ou 
+   tratamos 'A' como sendo igual a '0' ou como sendo igual a '1'. Se tratarmos
+   'A' como sendo '0', então 'AA' também dá '0' o que não é muito 
+   conveniente...
+   Vamos então assumor que 'A' vale '1'. Veremos pelos exemplos que, se 
+   aplicarmos directamente a fórmula a um número em base alfabética, 
+   tratando 'A' como sendo igual a '1', vamos falhar por uma unidade.
+
+Vejamos alguns exemplos:
+
+1. COL = AA  (o resultado deveria ser 26)
+
+    26^2  |  26^1 | 26^0 | D (Decimal)
+    (676) |  (26) |  (1) |
+ ----------------------------------------------------------------------------
+          |   A   |   A  |  Ax26 + Ax1 = 26 + 1 = 27
+
+2. COL = AB (o resultado deveria ser 27)
+
+ ----------------------------------------------------------------------------
+          |   A   |   B  |  Ax26 + Bx1 = 26 + 2 = 28
+
+3. COL = CD (o resultado deveria ser 81)
+
+ ----------------------------------------------------------------------------
+          |   C   |   D  |  Cx26 + Dx1 = 3x26 + 4 = 82
+
+
+4. COL = AAJ (o resultado deveria ser 711)
+
+ ----------------------------------------------------------------------------
+       A  |   A   |   J  |  Ax676 + Ax26 + Jx1 = 676 + 26 + 10 = 712
+
+
+Como vemos, o resultado dá sempre um valor a mais do é suposto. Solução? 
+Subtrair 1 ao resultado da fórmula.
+
+Temos então o seguinte pseudo-algoritmo:
+
+Entrada => COL_EXCEL : sequência de letras com colunas em base alfabética
+Saída   => COL : coluna em base decimal
+
+1. Definir um somador com valor apropriado (eg, SOMA)
+2. Definir um contador com valor do expoente (eg, EXP)
+4. Para CAR em COL_EXCEL
+    2.1 Converter caractere para número de 1 a 26
+    2.2 Multiplicar número por potência de 26 apropriada
+    2.3 Somar este valor a SOMA
+    2.4 Actualizar eventuais contadores...
+4. Subtrair 1 a SOMA
+
+
+
+
+
+
+
+
